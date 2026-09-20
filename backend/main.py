@@ -7,8 +7,14 @@ from pydantic import BaseModel
 from pypinyin import lazy_pinyin, Style
 from snownlp import SnowNLP
 from datetime import datetime, timezone
+import os
+from dotenv import load_dotenv
 
 from storage import init_db, save_record, get_history   # ← 这一行：import 里多个 init_db
+
+load_dotenv()                        # ← 读同目录下的 .env
+
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
 
 app = FastAPI()
 # ... CORS 等原有代码，一个字不动 ...
@@ -18,7 +24,7 @@ init_db()                                               # ← 这一行：启动
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["ALLOWED_ORIGINS"],
     allow_methods=["GET", "POST"],
     allow_credentials=True, 
 )
